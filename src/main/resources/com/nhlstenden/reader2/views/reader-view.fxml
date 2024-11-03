@@ -46,7 +46,7 @@
             </Button>
          </left>
          <right>
-            <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Notes (1)" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Notes" BorderPane.alignment="CENTER">
                <font>
                   <Font size="15.0" />
                </font>
