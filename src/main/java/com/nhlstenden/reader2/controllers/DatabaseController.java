@@ -2,7 +2,12 @@ package com.nhlstenden.reader2.controllers;
 
 import com.nhlstenden.reader2.annotations.Exclude;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -36,17 +41,47 @@ public class DatabaseController {
      */
     public void openConnection() {
         try {
+
+            // TODO - all file retrieving and loading has to be converted to the folowing way
+
+            // instructions to build maven .jar - shadow executable
+            // mvn clean package shade:shade
+            // mvn clean package
+            // mvn install
+
             URL resourceUrl = getClass().getResource("/com/nhlstenden/reader2/database/sqlite.db");
-            if (resourceUrl != null) {
-                File dbFile = Paths.get(resourceUrl.toURI()).toFile();
+
+            Path tempFile = null;
+            try {
+                tempFile = copyToTempFile(resourceUrl, ".db");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (resourceUrl != null && tempFile != null) {
+//                File dbFile = Paths.get(resourceUrl.toURI()).toFile();
+                File dbFile = Paths.get(tempFile.toUri()).toFile();
                 String dbUrl = "jdbc:sqlite:" + dbFile.getAbsolutePath();
                 this.connection = DriverManager.getConnection(dbUrl);
             } else {
                 System.err.println("Database file not found in resources folder.");
             }
-        } catch (SQLException | URISyntaxException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    // Note: 'Path' is 'java.nio.file.Path', not 'javafx.scene.shape.Path'
+    public static Path copyToTempFile(URL url, String suffix) throws IOException {
+        // 'suffix' will default to ".tmp" if null
+        Path tempFile = Files.createTempFile(null, suffix);
+        try (InputStream in = url.openStream();
+             OutputStream out = Files.newOutputStream(tempFile)) {
+            in.transferTo(out); // 'transferTo' method added in Java 9
+        }
+        return tempFile;
     }
 
     /**
