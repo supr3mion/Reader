@@ -120,6 +120,8 @@ public class MainController {
         serieTitle.setText("");
         serieDescription.setText("");
         serieCoverImage.setImage(null);
+
+        setDisableButtons(true);
     }
 
     /**
@@ -228,6 +230,19 @@ public class MainController {
         for (Chapter chapter : serie.getChapters()) {
             chaptersListView.getItems().add(chapter.getTitle());
         }
+
+        // Enable all buttons
+        setDisableButtons(false);
+
+    }
+
+    public void setDisableButtons(boolean disabled) {
+        deleteSerieButton.setDisable(disabled);
+        addChapterButton.setDisable(disabled);
+        deleteChapterButton.setDisable(disabled);
+        startReadingButton.setDisable(disabled);
+        continueReadingButton.setDisable(disabled);
+        readSelectedChapterButton.setDisable(disabled);
     }
 
     /**
