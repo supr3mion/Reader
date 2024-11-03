@@ -330,6 +330,7 @@ public class MainController {
         serieName = null;
         serie = null;
         System.gc();
+        setDisableButton(true);
     }
 
     /**

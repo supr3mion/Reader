@@ -57,7 +57,6 @@ public class ImportService {
             serieModel.setDescription(serieDescription);
         }
 
-        chapters.sort(Comparator.comparing(Chapter::getTitle));
         serieModel.setChapters(chapters);
     }
 
@@ -115,7 +114,7 @@ public class ImportService {
         if (this.selectedSerie == null) {
             close = uploadSerieModel();
             File finalTargetDir = targetDir;
-            new Thread(() -> saveCoverImage(finalTargetDir, comicFiles)).start();
+            new Thread(() -> saveCoverImage(finalTargetDir, comicFiles.getFirst())).start();
         } else {
             try {
                 serieModel.setId(this.selectedSerie.getId());
@@ -134,12 +133,12 @@ public class ImportService {
      * Saves the cover image for the series.
      *
      * @param targetDir  the target directory where the cover image will be saved
-     * @param comicFiles the list of comic files from which the cover image will be generated
+     * @param comicFile the list of comic files from which the cover image will be generated
      */
-    private void saveCoverImage(File targetDir, List<File> comicFiles) {
+    private void saveCoverImage(File targetDir, File comicFile) {
         try {
             // Generate the cover image from the first comic file
-            Image coverImage = generateCoverImage(comicFiles.get(0));
+            Image coverImage = generateCoverImage(comicFile);
 
             // Get the width and height of the cover image
             int width = (int) coverImage.getWidth();

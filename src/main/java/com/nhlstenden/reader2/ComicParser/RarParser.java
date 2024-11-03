@@ -61,7 +61,11 @@ public class RarParser {
 
             // Sort the map entries by file name and add the images to the list
             imageMap.entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey())
+                    .sorted((entry1, entry2) -> {
+                        String name1 = entry1.getKey();
+                        String name2 = entry2.getKey();
+                        return compareFileNames(name1, name2);
+                    })
                     .forEachOrdered(entry -> images.add(entry.getValue()));
 
             // Set the sorted images to the chapter
@@ -81,5 +85,31 @@ public class RarParser {
     private boolean isImageFile(String fileName) {
         String lowerCaseName = fileName.toLowerCase();
         return lowerCaseName.endsWith(".png") || lowerCaseName.endsWith(".jpg") || lowerCaseName.endsWith(".jpeg");
+    }
+
+    /**
+     * Compares two file names, handling both numerical and alphabetical parts.
+     *
+     * @param name1 The first file name.
+     * @param name2 The second file name.
+     * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
+    private int compareFileNames(String name1, String name2) {
+        String[] parts1 = name1.split("\\D+");
+        String[] parts2 = name2.split("\\D+");
+
+        int length = Math.min(parts1.length, parts2.length);
+        for (int i = 0; i < length; i++) {
+            if (parts1[i].isEmpty() || parts2[i].isEmpty()) {
+                continue;
+            }
+            int num1 = Integer.parseInt(parts1[i]);
+            int num2 = Integer.parseInt(parts2[i]);
+            int result = Integer.compare(num1, num2);
+            if (result != 0) {
+                return result;
+            }
+        }
+        return name1.compareTo(name2);
     }
 }
