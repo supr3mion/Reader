@@ -59,8 +59,8 @@ public class DatabaseController {
             }
 
             if (resourceUrl != null && tempFile != null) {
-//                File dbFile = Paths.get(resourceUrl.toURI()).toFile();
-                File dbFile = Paths.get(tempFile.toUri()).toFile();
+                File dbFile = Paths.get(resourceUrl.toURI()).toFile();
+//                File dbFile = Paths.get(tempFile.toUri()).toFile();
                 String dbUrl = "jdbc:sqlite:" + dbFile.getAbsolutePath();
                 this.connection = DriverManager.getConnection(dbUrl);
             } else {
